@@ -1,32 +1,48 @@
-# Correlated Audit Ledger v0.1.0
+# Correlated Audit Ledger
 
-**Research question:** How do independent field omissions and shared whole-agent outages affect responsibility-gap detection in multi-agent AI systems, and can cost-sensitive threshold selection improve held-out performance?
+**Research question:** When the logs of several AI agents go missing, either one field at a time or several agents at once (a shared outage), how well can an auditor still find a skipped duty, and how do common ways of treating missing evidence trade missed gaps against false alarms?
 
-This is a lightweight, standard-library-only synthetic simulation. It does not call an LLM, use external datasets, or claim real-world validation.
+This is a small synthetic benchmark in Python (3.9+, standard library only). It does not call a language model and uses no real logs.
 
-## Quick start (Mac)
+## Setup
+
+- **Agents:** three roles (planner, executor, verifier). In 35% of episodes exactly one role skips its required duty; this is the responsibility gap to find.
+- **Logs:** each role writes 3 fields about its duty ("done" or "not done"). Each field is correct with probability 0.9.
+- **Missing evidence:**
+  - *independent omission:* each field is lost on its own (5%, 15% or 30%);
+  - *shared outage:* the log store used by the executor and the verifier fails, and all six of their fields are lost together (0%, 10% or 25% of episodes).
+- **Auditor rules:**
+  - `strict_complete`: judges a role only when all three of its fields are present (majority says "not done" means a gap).
+  - `optimistic_missing`: a missing field counts as "done".
+  - `pessimistic_missing`: a missing field counts as "not done".
+  - `probability`: the probability that some role skipped its duty, from the fields that are present (a missing field is no evidence either way). The threshold is chosen on training seeds 11, 22 and 33 to minimise weighted cost.
+- **Cost:** a missed gap costs 5 and a false alarm costs 1.
+- **Test:** seeds 44, 55, 66, 77 and 88, 400 episodes each, never used to choose the threshold.
+
+## Run
 
 ```bash
-cd "$HOME/Downloads" && unzip -oq correlated-audit-ledger-v0.1.0.zip
-cd "$HOME/Downloads/correlated-audit-ledger-v0.1.0" && python3 -m unittest discover -s tests -v && python3 run_experiment.py
-open "$HOME/Downloads/correlated-audit-ledger-v0.1.0/outputs/results_summary.md"
+python3 -m unittest discover -s tests -v
+python3 run_experiment.py
+python3 make_chart.py        # optional, needs matplotlib
 ```
 
-The run creates `outputs/synthetic_test_dataset.csv`, `outputs/metrics_by_seed.csv`, and `outputs/results_summary.md`. Upload the CSV only with its dataset card and synthetic-data disclosure.
+Outputs in `outputs/`: `results_summary.md` (mean and range over the 5 test seeds), `metrics_by_seed.csv`, `synthetic_test_dataset.csv` (one row per test episode with all nine log fields) and `dataset_card.md`. Fixed seeds, so every run gives the same files.
 
-## Methods
+## Results
 
-Three simulated agent roles are abstracted into an episode-level evidence score. The experiment varies independent field missingness (0.05, 0.15, 0.30) and shared outage probability (0, 0.10, 0.25). Train seeds are 11, 22, 33; held-out test seeds are 44 and 55. The weighted loss is 5 per false negative and 1 per false positive. The threshold is selected using training episodes only. Metrics are exploratory, with only two test seeds.
+To be filled in from my run.
 
 ## Limitations
 
-The simulator is intentionally simplified; its generated values are not real agent logs and do not establish that any detector works in deployed systems. Threshold selection can overfit the simulated distribution. Validate with preregistered protocols and appropriately governed real data before drawing deployment conclusions.
+- Simulated agents and logs, not real agent traces. The field accuracy (0.9), the gap rate (35%) and the 5-to-1 cost are choices of this benchmark.
+- The `probability` rule knows the simulator's true accuracy and gap rate, which a real auditor would have to estimate.
+- One kind of shared outage (two of three agents at once) and missingness that does not depend on whether the duty was done.
 
-## Sources and research context
+## Changes
 
-- University of Southampton, [Responsibility gaps and AI safety in multiagent systems](https://www.southampton.ac.uk/study/postgraduate-research/projects/responsibility-gaps-ai-safety-in-multiagent-systems) (research-interest context; not an endorsement of this project).
-- Ulster University, [Agentic AI for Complex Environments](https://www.ulster.ac.uk/doctoralcollege/find-a-phd/11a-computing/1903114) (research-interest context; check the official page for current eligibility and deadlines).
-- King's College London, [Cooperative AI Lab](https://coopai.kcl.ac.uk/) (research-group context, not a specific vacancy).
+- v0.2.0: rebuilt the simulator with three agent roles, per-field logs and shared outages that remove two agents together; rules now do what their names say; five test seeds with ranges. The v0.1.0 rules were all thresholds on one score, and its "strict" and "score threshold" rows were not separate rules.
 
 ## License
+
 Code: MIT. Synthetic data and figures: CC BY 4.0. See `LICENSE` and `CITATION.cff`.
