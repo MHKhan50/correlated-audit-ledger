@@ -1,0 +1,8 @@
+cff-version: 1.2.0
+message: "If you use this research prototype, cite the repository release. Replace author metadata before public release."
+title: "Correlated Audit Ledger: Stress-Testing Responsibility-Gap Detection under Missing Multi-Agent Logs"
+version: 0.1.0
+type: software
+authors:
+  - family-names: "Project Author"
+    given-names: "Replace before release"
