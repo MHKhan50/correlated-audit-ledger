@@ -31,7 +31,26 @@ Outputs in `outputs/`: `results_summary.md` (mean and range over the 5 test seed
 
 ## Results
 
-To be filled in from my run.
+From my run (`outputs/results_summary.md`), with 15% of fields missing, mean of the 5 test seeds:
+
+| Shared outage | Rule | Recall | FPR | Weighted cost |
+|---:|---|---:|---:|---:|
+| 0% | probability (threshold 0.1) | 0.988 | 0.228 | 66.2 |
+| 0% | strict_complete | 0.571 | 0.044 | 328.0 |
+| 0% | optimistic_missing | 0.869 | 0.054 | 110.6 |
+| 0% | pessimistic_missing | 0.993 | 0.372 | 98.8 |
+| 25% | probability (threshold 0.1) | 0.993 | 0.428 | 112.8 |
+| 25% | strict_complete | 0.490 | 0.038 | 386.4 |
+| 25% | optimistic_missing | 0.745 | 0.046 | 199.4 |
+| 25% | pessimistic_missing | 0.997 | 0.534 | 136.6 |
+
+![Recall and false alarms by shared outage rate](outputs/recall_fpr_by_outage.png)
+
+- Judging only complete logs missed about half of the skipped duties; counting missing fields as "not done" found almost all of them but flagged 37% to 53% of clean episodes.
+- Counting missing fields as "done" lost recall as outages rose (0.869 to 0.745): a duty skipped by an agent whose log was lost looked complete.
+- The probability rule had the lowest weighted cost in all 9 settings, but only by flagging every outage episode for review (all 318 clean outage episodes in the 15% / 25% setting).
+
+Article: [When AI agents' logs went missing together, every audit rule either missed gaps or raised false alarms](https://masmatixinnovations.co.uk/insights/correlated-audit-ledger.html)
 
 ## Limitations
 
