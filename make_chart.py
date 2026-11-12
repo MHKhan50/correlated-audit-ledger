@@ -14,10 +14,10 @@ import matplotlib.pyplot as plt  # noqa: E402
 ROOT = Path(__file__).resolve().parent
 MISSING = 0.15
 RULES = [
-    ("probability", "Probability, cost-tuned threshold", "#2b5ce6", "-"),
-    ("optimistic_missing", "Missing counts as done", "#35c3ff", "-"),
-    ("pessimistic_missing", "Missing counts as not done", "#c62828", "--"),
-    ("strict_complete", "Judge complete logs only", "#0f1830", ":"),
+    ("probability", "Probability, cost-tuned threshold", "#1F4E9C", "-"),
+    ("optimistic_missing", "Missing counts as done", "#E3A800", "-"),
+    ("pessimistic_missing", "Missing counts as not done", "#C8102E", "--"),
+    ("strict_complete", "Judge complete logs only", "#5FA65A", ":"),
 ]
 
 
