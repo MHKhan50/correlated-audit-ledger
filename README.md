@@ -1,5 +1,7 @@
 # Correlated Audit Ledger
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.24228794.svg)](https://doi.org/10.5281/zenodo.24228794)
+
 **Research question:** When the logs of several AI agents go missing, either one field at a time or several agents at once (a shared outage), how well can an auditor still find a skipped duty, and how do common ways of treating missing evidence trade missed gaps against false alarms?
 
 This is a small synthetic benchmark in Python (3.9+, standard library only). It does not call a language model and uses no real logs.
